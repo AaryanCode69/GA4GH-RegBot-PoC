@@ -25,8 +25,7 @@ from src.generate import generate_finding  # Phase 4  ✅
 from src.index import build_index  # Phase 2  ✅
 from src.ingest import load_pdf  # Phase 1  ✅
 from src.retrieve import retrieve_context  # Phase 3  ✅
-
-# from src.validate import validate_output   # Phase 5  ⏳
+from src.validate import validate_output  # Phase 5  ✅
 
 MOCK_QUERY: str = (
     "Does the data use agreement require informing data subjects about "
@@ -58,13 +57,17 @@ def main() -> None:
     # Phase 4: Guardrailed Generation
     print("[main] ── Phase 4: Guardrailed Generation ───────────────────")
     raw_json = generate_finding(MOCK_QUERY, context_nodes)
-    print(f"[main]    Raw LLM output received.\n")
+    print("[main]    Raw LLM output received.\n")
 
     # Phase 5: Deterministic Validation
-    # result = validate_output(raw_json, context_nodes)
-    # print(json.dumps(result, indent=2))
+    print("[main] ── Phase 5: Deterministic Citation Validation ─────────")
+    result = validate_output(raw_json, context_nodes)
+    passed = result.get("validation_passed", False)
+    print(f"[main]    validation_passed: {passed}")
+    print(f"[main]    Final validated output:\n")
+    print(json.dumps(result, indent=2))
 
-    print("=" * 65)
+    print("\n" + "=" * 65)
     print("[main] Pipeline run complete.")
     print("=" * 65 + "\n")
 
