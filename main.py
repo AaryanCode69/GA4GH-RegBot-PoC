@@ -18,20 +18,16 @@ import json
 import sys
 from pathlib import Path
 
-# Ensure project root is on the path when running directly
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 
-# ── Phase imports (uncommented progressively as each phase is completed) ───────
+from config import SAMPLE_PDF_PATH
+from src.index import build_index  # Phase 2  ✅
 from src.ingest import load_pdf  # Phase 1  ✅
 
-from config import SAMPLE_PDF_PATH
-
-# from src.index import build_index                  # Phase 2  ⏳
 # from src.retrieve import retrieve_context          # Phase 3  ⏳
 # from src.generate import generate_finding          # Phase 4  ⏳
 # from src.validate import validate_output           # Phase 5  ⏳
 
-# ── Mock compliance query (simulates a Data Use Letter clause) ─────────────────
 MOCK_QUERY: str = (
     "Does the data use agreement require informing data subjects about "
     "cross-jurisdictional sharing and the applicable legal frameworks?"
@@ -43,28 +39,28 @@ def main() -> None:
     print("  GA4GH-RegBot PoC – Local-First Compliance Pipeline")
     print("=" * 65 + "\n")
 
-    # ── Phase 1: Ingestion ────────────────────────────────────────────────────
+    # Phase 1: Ingestion
     print("[main] ── Phase 1: Ingestion & Parsing ──────────────────────")
     pages = load_pdf(SAMPLE_PDF_PATH)
     print(f"[main]    {len(pages)} page(s) ingested successfully.\n")
 
-    # ── Phase 2: Hierarchical Indexing ───────────────────────────────────────
-    # print("[main] ── Phase 2: Hierarchical Chunking & Indexing ────────")
-    # index, storage_context = build_index(pages)
-    # print("[main]    Index built and persisted to ChromaDB.\n")
+    # Phase 2: Hierarchical Indexing
+    print("[main] ── Phase 2: Hierarchical Chunking & Indexing ─────────")
+    index, storage_context = build_index(pages)
+    print("[main]    Index built and persisted to ChromaDB.\n")
 
-    # ── Phase 3: Small-to-Big Retrieval ──────────────────────────────────────
+    # Phase 3: Small-to-Big Retrieval
     # print("[main] ── Phase 3: Small-to-Big Retrieval ──────────────────")
     # print(f"[main]    Query: {MOCK_QUERY!r}")
     # context_nodes = retrieve_context(MOCK_QUERY, index, storage_context)
     # print(f"[main]    {len(context_nodes)} parent context node(s) retrieved.\n")
 
-    # ── Phase 4: Guardrailed Generation ──────────────────────────────────────
+    # Phase 4: Guardrailed Generation
     # print("[main] ── Phase 4: Guardrailed Generation ───────────────────")
     # raw_json = generate_finding(MOCK_QUERY, context_nodes)
     # print(f"[main]    Raw LLM output:\n{raw_json}\n")
 
-    # ── Phase 5: Deterministic Validation ────────────────────────────────────
+    # Phase 5: Deterministic Validation
     # print("[main] ── Phase 5: Deterministic Citation Validation ────────")
     # result = validate_output(raw_json, context_nodes)
     # print("\n[main]    Final validated output:")
