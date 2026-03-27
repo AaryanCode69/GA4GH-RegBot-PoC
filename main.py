@@ -21,11 +21,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 
 from config import SAMPLE_PDF_PATH
+from src.generate import generate_finding  # Phase 4  ✅
 from src.index import build_index  # Phase 2  ✅
 from src.ingest import load_pdf  # Phase 1  ✅
 from src.retrieve import retrieve_context  # Phase 3  ✅
 
-# from src.generate import generate_finding  # Phase 4  ⏳
 # from src.validate import validate_output   # Phase 5  ⏳
 
 MOCK_QUERY: str = (
@@ -56,14 +56,12 @@ def main() -> None:
     print(f"[main]    {len(context_nodes)} parent context node(s) retrieved.\n")
 
     # Phase 4: Guardrailed Generation
-    # print("[main] ── Phase 4: Guardrailed Generation ───────────────────")
-    # raw_json = generate_finding(MOCK_QUERY, context_nodes)
-    # print(f"[main]    Raw LLM output:\n{raw_json}\n")
+    print("[main] ── Phase 4: Guardrailed Generation ───────────────────")
+    raw_json = generate_finding(MOCK_QUERY, context_nodes)
+    print(f"[main]    Raw LLM output received.\n")
 
     # Phase 5: Deterministic Validation
-    # print("[main] ── Phase 5: Deterministic Citation Validation ────────")
     # result = validate_output(raw_json, context_nodes)
-    # print("\n[main]    Final validated output:")
     # print(json.dumps(result, indent=2))
 
     print("=" * 65)
